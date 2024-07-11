@@ -1390,6 +1390,12 @@ section,
 .starter-section {
   /* Add your styles here */
 }
+.image-container {
+  display: flex;
+  justify-content: center; /* Horizontal centering */
+  align-items: center;    /* Vertical centering */
+  height: 100vh;   /* Make container take up full viewport height if needed */
+}
 
 .sound-button {
   padding: 15px 30px;
