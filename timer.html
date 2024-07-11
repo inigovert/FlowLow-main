@@ -139,10 +139,12 @@
 
   <script>
     const timerDisplay = document.getElementById('timerDisplay');
+    const timerState = document.getElementById('timerState');
     const startButton = document.getElementById('startButton');
     const pauseButton = document.getElementById('pauseButton');
     const resetButton = document.getElementById('resetButton');
 
+    let isWorkTime = true;
     let startTime;
     let elapsedTime = 0;
     let timerInterval;
@@ -150,26 +152,39 @@
     function formatTime(time) {
       const minutes = Math.floor(time / 60);
       const seconds = time % 60;
-      return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`; // Conditional formatting for seconds
+      return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
 
     function startTimer() {
       startTime = Date.now() - elapsedTime;
       timerInterval = setInterval(() => {
         elapsedTime = Date.now() - startTime;
-        timerDisplay.textContent = formatTime(Math.round((1500 - elapsedTime / 1000))); // Round time to remove decimals
+        const remainingTime = isWorkTime ? 1500 - elapsedTime / 1000 : 300 - elapsedTime / 1000;
+        timerDisplay.textContent = formatTime(Math.round(remainingTime));
 
-        if (elapsedTime >= 1500 * 1000) { // Check for 25 minutes
+        if (remainingTime <= 0) {
           clearInterval(timerInterval);
-          alert("Time's up!");
-          resetTimer();
+
+          if (isWorkTime) {
+            alert("Break Time!");
+            isWorkTime = false;
+            timerDisplay.textContent = "05:00";
+            timerState.textContent = "Break";
+          } else {
+            alert("Work Time!");
+            isWorkTime = true;
+            timerDisplay.textContent = "25:00";
+            timerState.textContent = "Work";
+          }
+          
+          setTimeout(startTimer, 1000); // Start the next session after a 1-second delay
         }
       }, 1000);
+
       startButton.classList.add('d-none');
       pauseButton.classList.remove('d-none');
       resetButton.classList.remove('d-none');
     }
-   
 
     function pauseTimer() {
       clearInterval(timerInterval);
@@ -179,13 +194,15 @@
 
     function resetTimer() {
       clearInterval(timerInterval);
+      isWorkTime = true;
       elapsedTime = 0;
       timerDisplay.textContent = '25:00';
+      timerState.textContent = "Work";
       startButton.classList.remove('d-none');
       pauseButton.classList.add('d-none');
       resetButton.classList.add('d-none');
     }
-
+   
     startButton.addEventListener('click', startTimer);
     pauseButton.addEventListener('click', pauseTimer);
     resetButton.addEventListener('click', resetTimer);
