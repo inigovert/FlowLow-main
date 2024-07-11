@@ -79,7 +79,23 @@
             <div class="col-lg-8">
               <h1>Ambient Sounds</h1>
               <p class="mb-0">Choose your zen instrument.</p>
-              
+              <div class="row">
+                <div class="col-md-4">
+                  <button class="btn btn-primary mb-3 sound-button" data-sound="rainSounds">Rain Sounds</button>
+                </div>
+                <div class="col-md-4">
+                  <button class="btn btn-primary mb-3 sound-button" data-sound="campFire">Camp Fire</button>
+                </div>
+                <div class="col-md-4">
+                  <button class="btn btn-primary mb-3 sound-button" data-sound="beach">Beach</button>
+                </div>
+              </div>
+      
+              <audio id="soundPlayer" controls>
+                <source src="" type="audio/mpeg"> 
+                Your browser does not support the audio element.
+              </audio>
+            </div>
             </div>
           </div>
         </div>
@@ -128,6 +144,21 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <script>
+    const soundButtons = document.querySelectorAll('.sound-button');
+    const soundPlayer = document.getElementById('soundPlayer');
+    const soundSource = soundPlayer.querySelector('source');
+
+    soundButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const soundType = button.dataset.sound;
+        soundSource.src = `assets/sounds/${soundType}.mp3`; // Assuming sounds are in an 'assets/sounds' folder
+        soundPlayer.load();
+        soundPlayer.play();
+      });
+    });
+  </script>
 
 </body>
 
